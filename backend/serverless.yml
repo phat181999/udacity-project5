@@ -1,6 +1,6 @@
 org: phat99
-app: serverless-todo-app
-service: serverless-todo-appft
+app: serverless-car-app
+service: serverless-car-appft
 
 plugins:
   - serverless-webpack
@@ -21,9 +21,9 @@ provider:
     apiGateway: true
 
   environment:
-    TODOS_TABLE: Todos-${self:provider.stage}
-    TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverlessappft-c4-todo-images-${self:provider.stage}
+    CARS_TABLE: Cars-${self:provider.stage}
+    CARS_CREATED_AT_INDEX: CreatedAtIndex
+    ATTACHMENT_S3_BUCKET: serverlessappft-c4-car-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
   logs:
@@ -43,88 +43,88 @@ functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
-  GetTodos:
-    handler: src/lambda/http/getTodos.handler
+  GetCars:
+    handler: src/lambda/http/getCars.handler
     tracing: true
     events:
       - http:
           method: get
-          path: todos
+          path: cars
           cors: true
           authorizer: Auth
     iamRoleStatements:
       - Effect: "Allow"
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:179144709916:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.TODOS_CREATED_AT_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:179144709916:table/${self:provider.environment.CARS_TABLE}/index/${self:provider.environment.CARS_CREATED_AT_INDEX}
 
-    GetTodoID:
-      handler: src/lambda/http/getTodoId.handler
+    GetCarID:
+      handler: src/lambda/http/getCarId.handler
       tracing: true
       events:
         - http:
             method: get
-            path: todo/{todoId}
+            path: car/{carId}
             cors: true
             authorizer: Auth
       iamRoleStatements:
         - Effect: "Allow"
           Action:
             - dynamodb:Query
-          Resource: arn:aws:dynamodb:${self:provider.region}:179144709916:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.TODOS_CREATED_AT_INDEX}
+          Resource: !GetAtt CarsTable.Arn
 
-  CreateTodo:
-    handler: src/lambda/http/createTodo.handler
+  CreateCar:
+    handler: src/lambda/http/createCar.handler
     tracing: true
     events:
       - http:
           method: post
-          path: todos
+          path: cars
           cors: true
           authorizer: Auth
           reqValidatorName: RequestBodyValidator
           request:
             schemas:
-              application/json: ${file(models/create-todo-model.json)}
+              application/json: ${file(models/create-car-model.json)}
     iamRoleStatements:
       - Effect: "Allow"
         Action:
           - dynamodb:PutItem
-        Resource: !GetAtt TodosTable.Arn
+        Resource: !GetAtt CarsTable.Arn
 
-  UpdateTodo:
-    handler: src/lambda/http/updateTodo.handler
+  UpdateCar:
+    handler: src/lambda/http/updateCar.handler
     tracing: true
     events:
       - http:
           method: patch
           cors: true
-          path: todos/{todoId}
+          path: cars/{carId}
           authorizer: Auth
           reqValidatorName: RequestBodyValidator
           request:
             schemas:
-              application/json: ${file(models/update-todo-model.json)}
+              application/json: ${file(models/update-car-model.json)}
     iamRoleStatements:
       - Effect: "Allow"
         Action:
           - dynamodb:UpdateItem
-        Resource: !GetAtt TodosTable.Arn
+        Resource: !GetAtt CarsTable.Arn
 
-  DeleteTodo:
-    handler: src/lambda/http/deleteTodo.handler
+  DeleteCar:
+    handler: src/lambda/http/deleteCar.handler
     tracing: true
     events:
       - http:
           method: delete
           cors: true
-          path: todos/{todoId}
+          path: cars/{carId}
           authorizer: Auth
     iamRoleStatements:
       - Effect: "Allow"
         Action:
           - dynamodb:DeleteItem
-        Resource: !GetAtt TodosTable.Arn
+        Resource: !GetAtt CarsTable.Arn
 
   GenerateUploadUrl:
     handler: src/lambda/http/generateUploadUrl.handler
@@ -133,7 +133,7 @@ functions:
       - http:
           method: post
           cors: true
-          path: todos/{todoId}/attachment
+          path: cars/{carId}/attachment
           authorizer: Auth
     iamRoleStatements:
       - Effect: Allow
@@ -144,7 +144,7 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
-        Resource: !GetAtt TodosTable.Arn
+        Resource: !GetAtt CarsTable.Arn
 
 resources:
   Resources:
@@ -168,25 +168,25 @@ resources:
         ValidateRequestBody: true
         ValidateRequestParameters: false
 
-    TodosTable:
+    CarsTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
-          - AttributeName: todoId
+          - AttributeName: carId
             AttributeType: S
           - AttributeName: createdAt
             AttributeType: S
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
-          - AttributeName: todoId
+          - AttributeName: carId
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.TODOS_TABLE}
+        TableName: ${self:provider.environment.CARS_TABLE}
         GlobalSecondaryIndexes:
-          - IndexName: ${self:provider.environment.TODOS_CREATED_AT_INDEX}
+          - IndexName: ${self:provider.environment.CARS_CREATED_AT_INDEX}
             KeySchema:
               - AttributeName: userId
                 KeyType: HASH
@@ -217,7 +217,7 @@ resources:
       Type: AWS::S3::BucketPolicy
       Properties:
         PolicyDocument:
-          Id: TodoPolicy
+          Id: CarPolicy
           Version: "2012-10-17"
           Statement:
             - Sid: PublicReadForGetBucketObjects

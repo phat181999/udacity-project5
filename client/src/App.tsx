@@ -7,7 +7,7 @@ import { EditTodo } from './components/EditTodo'
 import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
 import { Todos } from './components/Todos'
-
+import Background from './image/mustang.jpg'
 export interface AppProps {}
 
 export interface AppProps {
@@ -16,6 +16,14 @@ export interface AppProps {
 }
 
 export interface AppState {}
+
+const styleBackground = {
+  backgroundImage: `url(${Background})`,
+  backgroundRepeat: 'no-repeat',
+  backgroundColor: '#61dafb',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center'
+}
 
 export default class App extends Component<AppProps, AppState> {
   constructor(props: AppProps) {
@@ -35,7 +43,7 @@ export default class App extends Component<AppProps, AppState> {
 
   render() {
     return (
-      <div>
+      <div style={styleBackground}>
         <Segment style={{ padding: '8em 0em' }} vertical>
           <Grid container stackable verticalAlign="middle">
             <Grid.Row>
@@ -91,7 +99,7 @@ export default class App extends Component<AppProps, AppState> {
         <Route
           path="/"
           exact
-          render={props => {
+          render={(props) => {
             return <Todos {...props} auth={this.props.auth} />
           }}
         />
@@ -99,7 +107,7 @@ export default class App extends Component<AppProps, AppState> {
         <Route
           path="/todos/:todoId/edit"
           exact
-          render={props => {
+          render={(props) => {
             return <EditTodo {...props} auth={this.props.auth} />
           }}
         />
