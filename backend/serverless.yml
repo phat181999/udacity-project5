@@ -56,22 +56,26 @@ functions:
       - Effect: "Allow"
         Action:
           - dynamodb:Query
+          - xray:PutTelemetryRecords
+          - xray:PutTraceSegments
         Resource: arn:aws:dynamodb:${self:provider.region}:179144709916:table/${self:provider.environment.CARS_TABLE}/index/${self:provider.environment.CARS_CREATED_AT_INDEX}
 
-    GetCarID:
-      handler: src/lambda/http/getCarId.handler
-      tracing: true
-      events:
-        - http:
-            method: get
-            path: car/{carId}
-            cors: true
-            authorizer: Auth
-      iamRoleStatements:
-        - Effect: "Allow"
-          Action:
-            - dynamodb:Query
-          Resource: !GetAtt CarsTable.Arn
+  GetCarID:
+    handler: src/lambda/http/getCarId.handler
+    tracing: true
+    events:
+      - http:
+          method: get
+          path: car/{carId}
+          cors: true
+          authorizer: Auth
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - dynamodb:Query
+          - xray:PutTelemetryRecords
+          - xray:PutTraceSegments
+        Resource: !GetAtt CarsTable.Arn
 
   CreateCar:
     handler: src/lambda/http/createCar.handler
@@ -90,6 +94,8 @@ functions:
       - Effect: "Allow"
         Action:
           - dynamodb:PutItem
+          - xray:PutTelemetryRecords
+          - xray:PutTraceSegments
         Resource: !GetAtt CarsTable.Arn
 
   UpdateCar:
@@ -109,6 +115,8 @@ functions:
       - Effect: "Allow"
         Action:
           - dynamodb:UpdateItem
+          - xray:PutTelemetryRecords
+          - xray:PutTraceSegments
         Resource: !GetAtt CarsTable.Arn
 
   DeleteCar:
@@ -124,6 +132,8 @@ functions:
       - Effect: "Allow"
         Action:
           - dynamodb:DeleteItem
+          - xray:PutTelemetryRecords
+          - xray:PutTraceSegments
         Resource: !GetAtt CarsTable.Arn
 
   GenerateUploadUrl:
@@ -144,6 +154,8 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
+          - xray:PutTelemetryRecords
+          - xray:PutTraceSegments
         Resource: !GetAtt CarsTable.Arn
 
 resources:

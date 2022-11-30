@@ -18,11 +18,11 @@ export interface AppProps {
 export interface AppState {}
 
 const styleBackground = {
-  // backgroundImage: `url(${Background})`,
-  // backgroundRepeat: 'no-repeat',
-  // backgroundColor: '#61dafb',
-  // backgroundSize: 'cover',
-  // backgroundPosition: 'center'
+  backgroundImage: `url(${Background})`,
+  backgroundRepeat: 'no-repeat',
+  backgroundColor: '#61dafb',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center'
 }
 
 export default class App extends Component<AppProps, AppState> {

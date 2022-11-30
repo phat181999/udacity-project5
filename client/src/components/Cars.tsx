@@ -174,10 +174,10 @@ export class Cars extends React.PureComponent<TodosProps, TodosState> {
                 />
               </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
-                <p style={{ color: 'white' }}>{todo.name}</p>
+                <p style={{ color: 'red', fontSize: '50px' }}>{todo.name}</p>
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                <p style={{ color: 'white' }}>{todo.dueDate}</p>
+                <p style={{ color: 'red', fontSize: '50px' }}>{todo.dueDate}</p>
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
