@@ -2,7 +2,7 @@ import { apiEndpoint } from '../config'
 import { CAR } from '../types/Car'
 import { CreateCarRequest } from '../types/CreateCarRequest'
 import Axios from 'axios'
-import { UpdateTodoRequest } from '../types/UpdateTodoRequest'
+import { UpdateCarRequest } from '../types/UpdateCarRequest'
 
 export async function getTodos(idToken: string): Promise<CAR[]> {
   console.log('Fetching todos')
@@ -37,11 +37,11 @@ export async function createTodo(
 export async function patchTodo(
   idToken: string,
   carId: string,
-  updatedTodo: UpdateTodoRequest
+  updatedCar: UpdateCarRequest
 ): Promise<void> {
   await Axios.patch(
     `${apiEndpoint}/cars/${carId}`,
-    JSON.stringify(updatedTodo),
+    JSON.stringify(updatedCar),
     {
       headers: {
         'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export async function deleteTodo(
   idToken: string,
   carId: string
 ): Promise<void> {
-  await Axios.delete(`${apiEndpoint}/todos/${carId}`, {
+  await Axios.delete(`${apiEndpoint}/cars/${carId}`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${idToken}`
@@ -65,10 +65,10 @@ export async function deleteTodo(
 
 export async function getUploadUrl(
   idToken: string,
-  todoId: string
+  carId: string
 ): Promise<string> {
   const response = await Axios.post(
-    `${apiEndpoint}/cars/${todoId}/attachment`,
+    `${apiEndpoint}/cars/${carId}/attachment`,
     '',
     {
       headers: {

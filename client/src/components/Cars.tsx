@@ -14,7 +14,7 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createTodo, deleteTodo, getTodos, patchTodo } from '../api/todos-api'
+import { createTodo, deleteTodo, getTodos, patchTodo } from '../api/cars-api'
 import Auth from '../auth/Auth'
 import { CAR } from '../types/Car'
 
@@ -29,7 +29,7 @@ interface TodosState {
   loadingTodos: boolean
 }
 
-export class Todos extends React.PureComponent<TodosProps, TodosState> {
+export class Cars extends React.PureComponent<TodosProps, TodosState> {
   state: TodosState = {
     todos: [],
     newTodoName: '',
@@ -40,8 +40,8 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     this.setState({ newTodoName: event.target.value })
   }
 
-  onEditButtonClick = (todoId: string) => {
-    this.props.history.push(`/todos/${todoId}/edit`)
+  onEditButtonClick = (carId: string) => {
+    this.props.history.push(`/cars/${carId}`)
   }
 
   onTodoCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
@@ -56,18 +56,18 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
         newTodoName: ''
       })
     } catch {
-      alert('Todo creation failed')
+      alert('cars creation failed')
     }
   }
 
-  onTodoDelete = async (todoId: string) => {
+  onTodoDelete = async (carId: string) => {
     try {
-      await deleteTodo(this.props.auth.getIdToken(), todoId)
+      await deleteTodo(this.props.auth.getIdToken(), carId)
       this.setState({
-        todos: this.state.todos.filter((todo) => todo.carId !== todoId)
+        todos: this.state.todos.filter((todo) => todo.carId !== carId)
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('car deletion failed')
     }
   }
 
@@ -85,7 +85,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
         })
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('car deletion failed')
     }
   }
 
@@ -98,7 +98,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
       })
     } catch (e) {
       // alert(`Failed to fetch todos: ${e.message}`)
-      let errorMessage = 'Failed to fetch todos: '
+      let errorMessage = 'Failed to fetch car: '
       if (e instanceof Error) {
         errorMessage = e.message
       }
@@ -127,12 +127,12 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
               color: 'teal',
               labelPosition: 'left',
               icon: 'add',
-              content: 'New task',
+              content: 'New car',
               onClick: this.onTodoCreate
             }}
             fluid
             actionPosition="left"
-            placeholder="To change the world..."
+            placeholder="Create new car..."
             onChange={this.handleNameChange}
           />
         </Grid.Column>
@@ -155,7 +155,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     return (
       <Grid.Row>
         <Loader indeterminate active inline="centered">
-          Loading TODOs
+          Loading CARS
         </Loader>
       </Grid.Row>
     )
@@ -174,10 +174,10 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
                 />
               </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
-                {todo.name}
+                <p style={{ color: 'white' }}>{todo.name}</p>
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {todo.dueDate}
+                <p style={{ color: 'white' }}>{todo.dueDate}</p>
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
